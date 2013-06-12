@@ -33,7 +33,7 @@ class apiCivicInfoService extends Service {
 		$this->serviceName = 'civicinfo';
 
 		$client->addService($this->serviceName, $this->version);
-		$this->elections = new ElectionsServiceResource($this, $this->serviceName, 'elections', array());
+		$this->elections = new ElectionsServiceResource($this, $this->serviceName, 'elections', '{"methods": "get": {"parameters": {}, "id": "", "httpMethod": "GET", "path": "", "response": {"$ref": "Url"}}}', true);
 	}
 }
 
@@ -53,7 +53,7 @@ class Elections extends Model {
 	protected $__itemsDataType = 'array';
 	public $items;
 	public $kind;
-	public function setItems(/* array(Bookshelf) */ $items) {
+	public function setItems($items) {
 		$this->assertIsArray($items, 'Election', __METHOD__);
 		$this->items = $items;
 	}
