@@ -62,7 +62,7 @@ Supported sample applications:
 include 'vendor/autoload.php';
 
 $client = new \GoogleApi\Client();
-$service = new \GoogleApi\Books\Service($client);
+$service = new \GoogleApi\Contrib\apiBooksService($client);
 
 $optParams = array('filter' => 'free-ebooks');
 $results = $service->volumes->listVolumes('Henry David Thoreau', $optParams);
