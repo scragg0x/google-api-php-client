@@ -30,21 +30,49 @@ class apiCivicInfoService extends Service {
 	public function __construct(Client $client){
 		$this->restBasePath = "/civicinfo/us_v1/";
 		$this->version = 'us_v1';
-		$this->serviceName = 'civicinfo';
+		$this->serviceName = 'civicInfo';
 
 		$client->addService($this->serviceName, $this->version);
-		$this->elections = new ElectionsServiceResource($this, $this->serviceName, 'elections', '{"methods": "get": {"parameters": {}, "id": "", "httpMethod": "GET", "path": "", "response": {"$ref": "Url"}}}', true);
+		$this->elections = new ElectionsServiceResource($this, $this->serviceName, 'elections', array(
+			'methods'=> array(
+				'electionQuery' => array(
+					'id' => 'civicInfo.elections.electionQuery',
+					'httpMethod' => 'GET',
+					'path' => 'elections',
+					'response' => array(
+						'$ref' => 'Election'
+					)
+				),
+				'voterInfoQuery' => array(
+					'id' => 'civicInfo.elections.voterInfoQuery',
+					'httpMethod' => 'POST',
+					'path' => 'voterinfo/{electionId}/lookup',
+					'parameters' => array(
+						'electionId' => array('required' => true, 'type'=> 'long', 'location' => 'path'),
+						'officialOnly' => array('type' => 'boolean', 'location' => 'query')
+					)
+				)
+			)
+		));
 	}
 }
 
 class ElectionsServiceResource extends ServiceResource {
-	public function get() {
-		$data = $this->__call('get', array());
+	public function electionQuery() {
+		$params = array();
+		$data = $this->__call('electionQuery', array($params));
 		if ($this->useObjects()) {
 			return new Elections($data);
 		} else {
 			return $data;
 		}
+	}
+
+	public function voterInfoQuery($electionId, $address, $optParams=array()) {
+		$params = array('electionId' => $electionId, 'postBody' => array('address' => $address));
+		$params = array_merge($params, $optParams);
+		$data = $this->__call('voterInfoQuery', array($params));
+		return $data;
 	}
 }
 
